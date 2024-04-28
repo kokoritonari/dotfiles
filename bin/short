@@ -1,0 +1,74 @@
+#!/usr/bin/env bash
+
+set +e
+
+usage() {
+	echo "${0##*/} - shorten your code" >&2
+	echo "Usage: ${0##*/} [-l --length] [-c --copy] <filename>" >&2
+	exit 1
+}
+
+shorten() {
+	cat "$1" | \
+	tr -d '\n' | \
+	sed -e 's/\([^A-Za-z0-9_]\) \+\([^A-Za-z0-9_]\)/\1\2/g' \
+		-e 's/\([^A-Za-z0-9_]\) \+\([A-Za-z0-9_]\)/\1\2/g' \
+		-e 's/\([A-Za-z0-9_]\) \+\([^A-Za-z0-9_]\)/\1\2/g' \
+		-e 's/\([^A-Za-z0-9_]\) \+\([^A-Za-z0-9_]\)/\1\2/g'
+}
+
+main() {
+	local opt optarg
+	local length=false
+	local copy=false
+
+	# 引数を取る指定は - のみ
+	while getopts lc-: opt; do
+		# OPTIND 番目の引数を optarg へ代入
+		optarg="${!OPTIND}"
+		[[ "$opt" == "-" ]] && opt="-$OPTARG"
+
+		case "-$opt" in
+			-l | --length )
+				length=true
+				;;
+			-c | --copy )
+				copy=true
+				;;
+			-- )
+				break
+				;;
+			-\? )
+				usage
+				;;
+			--* )
+				usage
+				;;
+		esac
+	done
+	shift $((OPTIND - 1))
+
+	local filename="$1"
+
+	if ! [[ -f "$filename" ]]; then
+		echo "File does not exist." >&2
+		exit 1
+	fi
+
+	if $length; then
+		shorten "$filename" | wc -c
+	fi
+
+	if $copy; then
+		shorten "$filename" | pbcopy
+	fi
+
+	if ! $length && ! $copy; then
+		shorten "$filename"
+	fi
+}
+
+# このスクリプトが直接実行された際の処理
+[[ ${#BASH_SOURCE[@]} -eq 1 ]] && {
+	main "$@"
+}
