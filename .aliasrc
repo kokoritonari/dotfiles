@@ -487,8 +487,8 @@ alias abcminus='mkdir -p $(minus) && cd $(minus) && mkabc'
 alias cdplus='cd $(minus -1)'
 alias abcplus='mkdir -p $(minus -1) && cd $(minus -1) && mkabc'
 alias mkcd='source mkcd'
-alias short="tr -d '\n' | sed -e 's/\([^A-Za-z0-9]\) \+\([^A-Za-z0-9]\)/\1\2/g' -e 's/\([^A-Za-z0-9]\) \+\([A-Za-z0-9]\)/\1\2/g' -e 's/\([A-Za-z0-9]\) \+\([^A-Za-z0-9]\)/\1\2/g' -e 's/\([^A-Za-z0-9]\) \+\([^A-Za-z0-9]\)/\1\2/g'"
-alias len="short | wc -m"
+alias short="tr -d '\n' | sed -e 's/\([^A-Za-z0-9_]\) \+\([^A-Za-z0-9_]\)/\1\2/g' -e 's/\([^A-Za-z0-9_]\) \+\([A-Za-z0-9_]\)/\1\2/g' -e 's/\([A-Za-z0-9_]\) \+\([^A-Za-z0-9_]\)/\1\2/g' -e 's/\([^A-Za-z0-9_]\) \+\([^A-Za-z0-9_]\)/\1\2/g'"
+alias len="short | wc -c"
 alias shortcp="short | pbcopy"
 
 # for tex image creation
